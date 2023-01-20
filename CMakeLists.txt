@@ -3,38 +3,54 @@ cmake_minimum_required(VERSION 3.5)
 project(SignalHandler LANGUAGES CXX DESCRIPTION "Simple UNIX signal handler")
 include(CustomFunctions.cmake)
 
-option(GENERATE_DEB_PACKAGE "" ON)
+option(GENERATE_DEB_PACKAGE "" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_project_properties()
 
+include_directories(
+        inc/
+)
+
+file(GLOB_RECURSE INC_FILES CONFIGURE_DEPENDS
+        inc/*.hpp
+        )
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+        src/*.cpp
+        )
+
 set(LIB_VERSION 0.1)
 
 if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
     message(STATUS "CMAKE_INSTALL_PREFIX is not set. $ENV{HOME} directory will be used")
-    set(INSTALL_PREFIX "$ENV{HOME}")
+    set(INSTALL_PREFIX "$ENV{HOME}/tristan_libs")
 else ()
     set(INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 endif ("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
 
-set(GENERAL_INSTALL_DIR ${INSTALL_PREFIX}/tristan_libs)
-set(PROJECT_INSTALL_DIR ${GENERAL_INSTALL_DIR}/${PROJECT_NAME})
+set(PROJECT_INSTALL_DIR ${INSTALL_PREFIX}/${PROJECT_NAME})
 set(LIBRARY_INSTALL_DIR ${PROJECT_INSTALL_DIR}/${CMAKE_BUILD_TYPE})
 message(STATUS "Library install directory is set to ${LIBRARY_INSTALL_DIR}")
 set(INCLUDE_INSTALL_DIR ${LIBRARY_INSTALL_DIR}/inc)
 message(STATUS "Include install directory is set to ${INCLUDE_INSTALL_DIR}")
-set(CMAKE_CONFIG_INSTALL_DIR ${GENERAL_INSTALL_DIR}/cmake/${CMAKE_BUILD_TYPE})
+set(CMAKE_CONFIG_INSTALL_DIR ${INSTALL_PREFIX}/cmake/${CMAKE_BUILD_TYPE})
 message(STATUS "CMake config files install directory is set to ${CMAKE_CONFIG_INSTALL_DIR}")
 
 set(UNINSTALLER_NAME uninstall_${CMAKE_BUILD_TYPE}.sh)
 
-add_library(${PROJECT_NAME} STATIC signal_handler.hpp signal_handler.cpp)
+add_library(${PROJECT_NAME} STATIC)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC TRISTAN_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+target_sources(
+        ${PROJECT_NAME}
+        PRIVATE ${SRC_FILES}
+        PUBLIC ${INC_FILES}
+)
 
 set_target_properties(
         ${PROJECT_NAME}
@@ -75,7 +91,7 @@ install(FILES
         DESTINATION ${CMAKE_CONFIG_INSTALL_DIR})
 
 install(FILES
-        signal_handler.hpp
+        inc/signal_handler.hpp
         CONFIGURATIONS ${CMAKE_BUILD_TYPE}
         DESTINATION ${INCLUDE_INSTALL_DIR})
 

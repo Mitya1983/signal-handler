@@ -10,7 +10,7 @@
 
 namespace tristan {
 
-    class [[maybe_unused]] SignalHandler {
+    class SignalHandler {
         SignalHandler();
 
     public:
@@ -21,14 +21,15 @@ namespace tristan {
         ~SignalHandler() = default;
 
         static void registerHandler(int signal, std::function< void() > handler);
-        template < class Object > [[maybe_unused]] static void registerHandler(int signal, std::weak_ptr<Object> object, void (Object::*functor)()){
+
+        template < class Object > static void registerHandler(int signal, std::weak_ptr<Object> object, void (Object::*functor)()){
             SignalHandler::registerHandler(signal, [object, functor]{
                 if (auto l_object = object.lock()){
                     std::invoke(functor, l_object);
                 }
             });
         }
-        template < class Object > [[maybe_unused]] static void registerHandler(int signal, Object* object, void (Object::*functor)()){
+        template < class Object > static void registerHandler(int signal, Object* object, void (Object::*functor)()){
             SignalHandler::registerHandler(signal, [object, functor] {
                 if (object != nullptr){
                     std::invoke(functor, object);
@@ -36,7 +37,7 @@ namespace tristan {
             });
         }
 
-        [[maybe_unused]] static void raiseSignal(int signal, bool value = true);
+        static void raiseSignal(int signal, bool value = true);
 
     protected:
     private:

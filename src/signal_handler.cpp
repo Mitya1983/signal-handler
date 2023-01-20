@@ -21,10 +21,10 @@ void tristan::SignalHandler::registerHandler(int signal, std::function<void()> h
 #if defined __linux__
 
     if (signal <= 0 || signal > 31){
-        throw std::runtime_error("Signal should be in range of [1 : 31]");
+        throw std::invalid_argument("Signal should be in range of [1 : 31]");
     }
     if (signal == SIGKILL || signal == SIGSTOP){
-        throw std::runtime_error("The signals SIGKILL and SIGSTOP cannot be caught, blocked, or ignored");
+        throw std::invalid_argument("The signals SIGKILL and SIGSTOP cannot be caught, blocked, or ignored");
     }
     signal_handler.m_handlers[signal].emplace_back(std::move(handler));
     sigaction(signal, &signal_handler.m_action, nullptr);
@@ -33,7 +33,7 @@ void tristan::SignalHandler::registerHandler(int signal, std::function<void()> h
 #endif
 }
 
-[[maybe_unused]] void tristan::SignalHandler::raiseSignal(int signal, bool value) { SignalHandler::instance().m_signalThatShouldBeRaised[signal] = value; }
+void tristan::SignalHandler::raiseSignal(int signal, bool value) { SignalHandler::instance().m_signalThatShouldBeRaised[signal] = value; }
 
 
 tristan::SignalHandler& tristan::SignalHandler::instance() {
