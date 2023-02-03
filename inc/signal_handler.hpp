@@ -22,18 +22,30 @@ namespace tristan {
 
         static void registerHandler(int signal, std::function< void() > handler);
 
-        template < class Object > static void registerHandler(int signal, std::weak_ptr<Object> object, void (Object::*functor)()){
-            SignalHandler::registerHandler(signal, [object, functor]{
-                if (auto l_object = object.lock()){
+        template < class Object > static void registerHandler(int signal, std::weak_ptr< Object > object, void (Object::*functor)()) {
+            SignalHandler::registerHandler(signal, [object, functor] {
+                if (auto l_object = object.lock()) {
                     std::invoke(functor, l_object);
                 }
             });
         }
-        template < class Object > static void registerHandler(int signal, Object* object, void (Object::*functor)()){
+
+        template < class Object > static void registerHandler(int signal, Object* object, void (Object::*functor)()) {
             SignalHandler::registerHandler(signal, [object, functor] {
-                if (object != nullptr){
+                if (object != nullptr) {
                     std::invoke(functor, object);
                 }
+            });
+        }
+
+        template < class Object > static void registerHandler(int signal, Object& object, void (Object::*functor)()) {
+            SignalHandler::registerHandler(signal, [object, functor] {
+                std::invoke(functor, object);
+            });
+        }
+        template < class Object > static void registerHandler(int signal, const Object& object, void (Object::*functor)()) {
+            SignalHandler::registerHandler(signal, [object, functor] {
+                std::invoke(functor, object);
             });
         }
 
