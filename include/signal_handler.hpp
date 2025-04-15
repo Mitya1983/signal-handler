@@ -1,11 +1,8 @@
-#ifndef SIGNAL_HANDLER_HPP
-#define SIGNAL_HANDLER_HPP
+#ifndef SIGNAL_HANDLER_INCLUDE_SIGNAL_HANDLER_HPP
+#define SIGNAL_HANDLER_INCLUDE_SIGNAL_HANDLER_HPP
 #include <functional>
-#include <array>
-#include <vector>
 #include <memory>
 
-#include <csignal>
 
 namespace mt::signal_handler {
 
@@ -39,7 +36,13 @@ namespace mt::signal_handler {
         });
     }
 
+    template < class Object > void registerHandler(int32_t p_signal, Object&& p_object, void (Object::*p_handler)()) {
+        registerHandler(p_signal, [ object = std::forward<Object>(p_object), p_handler ] {
+            std::invoke(p_handler, object);
+        });
+    }
+
     void raiseSignalAfterHandler(int32_t p_signal, bool p_value = true);
 
 }  // namespace mt::signal_handler
-#endif  // SIGNAL_HANDLER_HPP
+#endif  // SIGNAL_HANDLER_INCLUDE_SIGNAL_HANDLER_HPP

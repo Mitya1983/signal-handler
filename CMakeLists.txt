@@ -45,14 +45,7 @@ if (${PROJECT_IS_TOP_LEVEL})
     endif ()
 endif ()
 include_directories(
-        include/
-)
-
-file(GLOB INC_FILES CONFIGURE_DEPENDS
-        include/*.hpp
-)
-file(GLOB SRC_FILES CONFIGURE_DEPENDS
-        source/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set(LIB_VERSION 3.0.0)
@@ -108,8 +101,13 @@ endif ()
 
 target_sources(
         ${PROJECT_NAME}
-        PRIVATE ${SRC_FILES}
-        PUBLIC ${INC_FILES}
+        PRIVATE
+        source/signal_handler.cpp
+
+        PUBLIC FILE_SET HEADERS
+        BASE_DIRS include/
+        FILES
+        include/signal_handler.hpp
 )
 
 set_target_properties(

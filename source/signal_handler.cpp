@@ -1,11 +1,12 @@
-#include "signal_handler.hpp"
+#include "include/signal_handler.hpp"
 
-#include <mutex>
+#include <csignal>
 
-#if __has_include("mutex/mt_mutex.hpp")
+#if __has_include("mutex/mutex.hpp")
   #include "mutex/mutex.hpp"
 using mutex = mt::mutex::Mutex;
 #else
+#include <mutex>
 using mutex = std::mutex;
 #endif
 
@@ -24,7 +25,6 @@ namespace {
 #if defined __WIN32 || defined __WIN64
 #endif
         }
-
         SignalHandler(const SignalHandler&) = delete;
         SignalHandler(SignalHandler&&) = delete;
         SignalHandler& operator=(const SignalHandler&) = delete;
