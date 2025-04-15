@@ -102,13 +102,8 @@ endif ()
 
 target_sources(
         ${PROJECT_NAME}
-        PRIVATE
-        source/signal_handler.cpp
-
-        PUBLIC FILE_SET HEADERS
-        BASE_DIRS include/
-        FILES
-        include/signal_handler.hpp
+        PUBLIC include/signal_handler.hpp
+        PRIVATE source/signal_handler.cpp
 )
 
 set_target_properties(
