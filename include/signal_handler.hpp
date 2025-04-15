@@ -2,6 +2,7 @@
 #define SIGNAL_HANDLER_INCLUDE_SIGNAL_HANDLER_HPP
 #include <functional>
 #include <memory>
+#include <csignal>
 
 
 namespace mt::signal_handler {

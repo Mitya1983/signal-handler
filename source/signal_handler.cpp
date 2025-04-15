@@ -1,8 +1,6 @@
 #include "include/signal_handler.hpp"
 
-#include <csignal>
-
-#if __has_include("mutex/mutex.hpp")
+#if __has_include("mutex/include/mutex.hpp")
   #include "mutex/mutex.hpp"
 using mutex = mt::mutex::Mutex;
 #else
