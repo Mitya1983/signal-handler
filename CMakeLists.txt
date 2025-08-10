@@ -67,7 +67,7 @@ message(STATUS "${PROJECT_NAME}: Include install directory is set to ${INCLUDE_I
 
 if (NOT ${PROJECT_IS_TOP_LEVEL})
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_compile_definitions(MT_DEBUG)
+        add_compile_definitions(DEBUG_BUILD)
     endif ()
     set(SIGNAL_HANDLER_LIB_DIR ${LIBRARY_INSTALL_DIR} PARENT_SCOPE)
     set(SIGNAL_HANDLER_INCLUDE_DIR ${INCLUDE_INSTALL_DIR} PARENT_SCOPE)
